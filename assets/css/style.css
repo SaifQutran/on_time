@@ -1,0 +1,13 @@
+.login-logo{
+    width: 40%;
+    
+}
+.form-control{
+    min-width: 100px;
+}
+.login-button , .form-label{
+    display: block;
+}
+.bg-grad{
+    background: linear-gradient(rgb(255, 234, 204),rgb(191, 191, 191),45deg);
+}
