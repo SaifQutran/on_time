@@ -1,53 +1,72 @@
 <?php
-//include "../Model/Table.php";
+
+use Model\Table;
+
+include "../Model/Table.php";
 include "../Model/User.php";
+
 use Model\User;
+
+session_start();
+//session_unset();
+Model\Table::setConn();
+
 if (!empty($_SESSION['user'])) {
-    header('Location: Views/dashboard.php');
+    header('Location: dashboard.php');
 }
 
 include '../components/head.php';
 head("تسجيل الدخول");
 ?>
+<div class="main">
+    <section class="sign-in">
+        <div class="container">
+            <div class="signin-content">
+                <div class="signin-image">
+                    <figure><img src="../assets/images/logo.png" alt="sing up image"></figure>
+                </div>
 
-<body class="bg-grad">
+                <div class="signin-form">
+                    <h2 class="form-title">تسجيل الدخول</h2>
+                    <form method="post" class="register-form" id="login-form">
+                        <div class="form-group">
+                            <input type="text" name="phone" id="phone" placeholder="رقم الجوال" />
+                            <label class="login-label" for="phone"><i class="text-start  zmdi zmdi-account material-icons-name"></i></label>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" id="password" placeholder="كلمة السر" />
+                            <label class="login-label"  for="password"><i class="zmdi zmdi-lock"></i></label>
+                        </div>
+                        <?php
+                        
+                        if (isset($_POST['login'])) {
+                        //    echo "dseq";
+                            Model\Table::setConn();
+                            $phone = User::findColumn('phone', $_POST['phone']);
+                            $password = User::findColumn('password', $_POST['password']);
+                          //  var_dump($phone);
+                           // var_dump($password);
+                            if (!isset($phone[0]['user_id']) || !isset($password[0]['user_id'])) {
 
-
-    <div class="container h-25 ">
-        <div class="login-form ms-auto me-auto rounded-5 w-50 bg-success-subtle p-5 mt-5">
-            <div class="form-header d-flex">
-                <img src="../assets//R (1).png" alt="" class="text-center ms-auto me-auto login-logo">
+                                echo "<p class='text-danger text-bold'>رقم الجوال أو كلمة السر خطأ</p>";
+                            } else {
+                                if ($phone[0]['user_id'] == $password[0]['user_id']) {
+//                                    session_start();
+                                    $_SESSION['user'] = serialize(new User(User::Find($password[0]['user_id'])));
+                                       header("Location: dashboard.php");
+                                }
+                            }
+                        }
+                        ?>
+                        <div class="form-group form-button">
+                            <input type="submit" name="login" id="Login" class="form-submit fw-semibold fs-2" value="دخــول" />
+                        </div>
+                    </form>
+                </div>
             </div>
-            <form action="" method="post">
-
-                <label for="phone" class="form-label text-lg text-start  w-75 mt-3 me-auto ms-auto">رقم الجوال</label>
-                <input type="text" name="phone" class="form-control text-start w-75 h-25 me-auto ms-auto">
-
-                <label for="password" class="form-label mt-3 w-75 me-auto text-start ms-auto">كلمة السر</label>
-                <input type="password" name="password" class="form-control h-25 text-start w-75 me-auto ms-auto">
-                <?php
-                if (isset($_POST['login'])) {
-
-                    //Model\Table::setConn();
-                    $phone = User::findColumn('phone', $_POST['phone']);
-                    $password = User::findColumn('password', $_POST['password']);
-                    if (!isset($phone['user_id']) || !isset($password['user_id'])) {
-                        echo "<p class='text-danger text-bold'>رقم الجوال أو كلمة السر خطأ</p>";
-                } else {
-                        if ($phone['user_id'] == $password['user_id']) {
-                            session_start();
-                            $_SESSION['user'] = serialize(new User(User::Find($password['user_id'])));
-                            header("Location: dashboard.php");
-                        } else
-                        echo "out";
-                        //$_SESSION['login'] = serialize();}
-                    }
-                }
-                ?>
-                <input type="submit" value="دخول" class="text-center btn btn-success btn-lg ms-auto me-auto login-button mt-5" name="login">
-            </form>
         </div>
-    </div>
-</body>
+    </section>
+</div>
+
 <?php
 closeHTML();

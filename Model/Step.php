@@ -1,19 +1,22 @@
 <?php
 
-namespace Model;
 
-include("Table.php");
+namespace Model;
 
 class Step extends Table
 {
-    protected static $tablename = "steps";
-
+    protected static $tableName = "steps";
     protected $step_id;
     protected $step_name;
-    protected $step_description;
     protected $task_id;
-    protected $due_date;
-    protected $begin_date;
+    protected $assiged_at;
     protected $user_id;
-    protected bool $status;
+    protected $is_compleated;
+    protected $add_step;
+
+    static  function add_step($step_name, $task_Id, $user_id = "NULL")
+    {
+        $sql = "INSERT INTO `steps`(`step_name`,task_id,`user_id`) VALUES ('$step_name',$task_Id,$user_id)";
+        parent::$connection->query($sql);
+    }
 }
